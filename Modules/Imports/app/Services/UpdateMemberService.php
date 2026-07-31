@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
-use Modules\Imports\Models\Member;
-use Modules\Imports\Models\MemberDetail;
+use Modules\Members\Models\Member;
+use Modules\Members\Models\MemberDetail;
 use Modules\Members\Repositories\MemberRepository;
 use Modules\Members\Repositories\MemberUnitRepository;
 
@@ -58,16 +58,19 @@ class UpdateMemberService
     public function updateBasic(array $data, int $user_id)
     {
         try {
-            $data['whatsapp_code'] = $data['whatsapp_calling_code'];
+            $data['whatsapp_code'] = ltrim($data['whatsapp_calling_code'], '+');
+            $data['calling_code'] = ltrim($data['calling_code'], '+');
+            $data['emergency_phone_code'] = ltrim($data['emergency_phone_code'], '+');
+
 
             $userData = Arr::only($data, ['name', 'calling_code', 'phone']);
-            $memberData = Arr::only($data, ['gender', 'blood_group']);
+            $memberData = Arr::only($data, ['name', 'gender', 'blood_group']);
             $memberDetailsData = Arr::only($data, ['dob', 'emergency_phone_code', 'whatsapp_code', 'emergency_phone', 'whatsapp']);
             
             DB::beginTransaction();
-            User::update(['id' => $user_id], $userData);
-            Member::update(['user_id' => $user_id], $memberData);
-            MemberDetail::update(['user_id' => $user_id], $memberDetailsData);
+            User::where('id', $user_id)->update($userData);
+            Member::where('user_id', $user_id)->update($memberData);
+            MemberDetail::where('user_id', $user_id)->update($memberDetailsData);
             DB::commit();
             return;
         } catch(\Exception $e){

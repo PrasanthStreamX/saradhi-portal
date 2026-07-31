@@ -32,10 +32,10 @@ class MemberUpdateController extends BaseController
             if(!$user){
                 return $this->sendError('Could not find user.');
             }
-            
             if($data['group'] == 'basic'){
-                $response = $this->updateMemberService->updateBasic($data, $user->id);
-                return $this->sendResponse($response, 'Member basic details updated successfully');
+
+                $this->updateMemberService->updateBasic($data, $user->id);
+                return $this->sendResponse([], 'Member basic details updated successfully');
             }
         } catch (\Exception $e) {
             return $this->sendError('Failed to update member.', $e);

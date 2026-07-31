@@ -13,7 +13,7 @@ class BaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendResponse($result, $message = null)
+    public function sendResponse(array $result, $message = null)
     {
         $result['action_btn'] = 'member';
         $response = [
