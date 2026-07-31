@@ -38,6 +38,18 @@ class MemberUpdateController extends BaseController
             }else if($data['group'] == 'address'){
                 $this->updateMemberService->updateAddress($data, $user->id);
                 return $this->sendResponse([], 'Member address updated successfully');
+            }else if($data['group'] == 'passport'){
+                $this->updateMemberService->updatePassport($data, $user->id);
+                return $this->sendResponse([], 'Member passport updated successfully');
+            }else if($data['group'] == 'profession'){
+                $this->updateMemberService->updateProfession($data, $user->id);
+                return $this->sendResponse([], 'Member professional details updated successfully');
+            }else if($data['group'] == 'saradhi'){
+                $this->updateMemberService->updateSaradhi($data, $user->id);
+                return $this->sendResponse([], 'Member Saradhi details updated successfully');
+            }else if($data['group'] == 'introducer'){
+                $this->updateMemberService->updateIntroducer($data, $user->id);
+                return $this->sendResponse([], 'Member introducer details updated successfully');
             }
         } catch (\Exception $e) {
             return $this->sendError('Failed to update member.', $e);

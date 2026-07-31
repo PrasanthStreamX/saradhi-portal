@@ -12,6 +12,8 @@ use Modules\Members\Models\Member;
 use Modules\Members\Models\MemberDetail;
 use Modules\Members\Models\MemberLocalAddress;
 use Modules\Members\Models\MemberPermanentAddress;
+use Modules\Members\Models\Membership;
+use Modules\Members\Models\MemberUnit;
 use Modules\Members\Repositories\MemberRepository;
 use Modules\Members\Repositories\MemberUnitRepository;
 
@@ -114,6 +116,93 @@ class UpdateMemberService
             MemberLocalAddress::where('user_id', $user_id)->update($la);
             MemberPermanentAddress::where('user_id', $user_id)->update($pa);
             MemberDetail::where('user_id', $user_id)->update($memberDetailsData);
+            DB::commit();
+            return;
+        } catch(\Exception $e){
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Update member - Passport details
+     */
+    public function updatePassport(array $data, int $user_id)
+    {
+        try {
+            $memberDetailsData = Arr::except($data, ['id']);
+            DB::beginTransaction();
+            MemberDetail::where('user_id', $user_id)->update($memberDetailsData);
+            DB::commit();
+            return;
+        } catch(\Exception $e){
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Update member - Professional details
+     */
+    public function updateProfession(array $data, int $user_id)
+    {
+        try {
+            $memberDetailsData = Arr::except($data, ['id']);
+            DB::beginTransaction();
+            MemberDetail::where('user_id', $user_id)->update($memberDetailsData);
+            DB::commit();
+            return;
+        } catch(\Exception $e){
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Update member - Professional details
+     */
+    public function updateSaradhi(array $data, int $user_id)
+    {
+        try {
+            $memberDetailsData = Arr::except($data, ['id']);
+            DB::beginTransaction();
+            MemberDetail::where('user_id', $user_id)->update($memberDetailsData);
+            DB::commit();
+            return;
+        } catch(\Exception $e){
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Update member - Introducer details
+     */
+    public function updateIntroducer(array $data, int $user_id)
+    {
+        try {
+            $unitSlug = $data['unit'] ? $data['unit']['code'] : null;
+            $unitName = null;
+            if($unitSlug){
+                $unit = MemberUnit::where('slug', $unitSlug)->first();
+                if(!$unit){
+                    $unit = MemberUnit::create([
+                        'slug' => $data['unit']['code'],
+                        'name' => $data['unit']['name'],
+                        'active' => 1
+                    ]);
+                }
+                $unitName = $unit->name;
+            }
+            $membershipData = [
+                'introducer_mid' => $data['introducer_mid'],
+                'introducer_name' => $data['introducer_name'],
+                'introducer_unit' => $unitName,
+                'introducer_phone_code' => $data['introducer_calling_code'],
+                'introducer_phone' => $data['introducer_phone']
+            ];
+            DB::beginTransaction();
+            Membership::where('user_id', $user_id)->update($membershipData);
             DB::commit();
             return;
         } catch(\Exception $e){
