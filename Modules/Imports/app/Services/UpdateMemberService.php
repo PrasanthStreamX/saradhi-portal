@@ -90,11 +90,12 @@ class UpdateMemberService
             $la = [
                 'line_1' => $data['la_1'],
                 'building' => $data['la_building'],
-                'flat' => $data['lat_flat'],
-                'floor' => $data['lat_floor'],
-                'country' => $data['lat_country'],
-                'region' => $data['lat_region'],
-                'city' => $data['lat_city'],
+                'flat' => $data['la_flat'],
+                'floor' => $data['la_floor'],
+                'country' => $data['la_country'],
+                'region' => $data['la_region'],
+                'district' => $data['la_region'],
+                'city' => $data['la_city'],
             ];
             $pa = [
                 'line_1' => $data['pa_1'],
@@ -106,7 +107,9 @@ class UpdateMemberService
                 'zip' => $data['pa_zip'],
                 'contact' => $data['home_contact']
             ];
+            
             $memberDetailsData['paci'] = $data['paci'];
+            
             DB::beginTransaction();
             MemberLocalAddress::where('user_id', $user_id)->update($la);
             MemberPermanentAddress::where('user_id', $user_id)->update($pa);
