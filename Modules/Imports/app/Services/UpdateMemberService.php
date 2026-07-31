@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Modules\Members\Models\Member;
 use Modules\Members\Models\MemberDetail;
+use Modules\Members\Models\MemberLocalAddress;
+use Modules\Members\Models\MemberPermanentAddress;
 use Modules\Members\Repositories\MemberRepository;
 use Modules\Members\Repositories\MemberUnitRepository;
 
@@ -70,6 +72,44 @@ class UpdateMemberService
             DB::beginTransaction();
             User::where('id', $user_id)->update($userData);
             Member::where('user_id', $user_id)->update($memberData);
+            MemberDetail::where('user_id', $user_id)->update($memberDetailsData);
+            DB::commit();
+            return;
+        } catch(\Exception $e){
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Update member - Address
+     */
+    public function updateAddress(array $data, int $user_id)
+    {
+        try {
+            $la = [
+                'line_1' => $data['la_1'],
+                'building' => $data['la_building'],
+                'flat' => $data['lat_flat'],
+                'floor' => $data['lat_floor'],
+                'country' => $data['lat_country'],
+                'region' => $data['lat_region'],
+                'city' => $data['lat_city'],
+            ];
+            $pa = [
+                'line_1' => $data['pa_1'],
+                'line_2' => $data['pa_2'],
+                'country' => $data['pa_country'],
+                'region' => $data['pa_region'],
+                'district' => $data['pa_district'],
+                'city' => $data['pa_city'],
+                'zip' => $data['pa_zip'],
+                'contact' => $data['home_contact']
+            ];
+            $memberDetailsData['paci'] = $data['paci'];
+            DB::beginTransaction();
+            MemberLocalAddress::where('user_id', $user_id)->update($la);
+            MemberPermanentAddress::where('user_id', $user_id)->update($pa);
             MemberDetail::where('user_id', $user_id)->update($memberDetailsData);
             DB::commit();
             return;
