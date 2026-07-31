@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Imports\Http\Controllers\ImportsController;
+use Modules\Imports\Http\Controllers\MemberUpdateController;
 use Modules\Imports\Http\Controllers\ReceiveMemberController;
 
 /*
@@ -22,4 +23,7 @@ Route::controller(ReceiveMemberController::class)->prefix('import')->group(funct
     Route::get('email/exists', 'checkEmailExists');
     Route::post('user/create', 'createUser');
     Route::post('member/init', 'initMember');
+});
+Route::controller(MemberUpdateController::class)->prefix('import/member')->group(function(){
+    Route::post('update', 'updateMember');
 });
