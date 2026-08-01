@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use Modules\Imports\Services\SendMemberService;
 use Modules\Members\Exports\MembersListExport;
 use Modules\Members\Models\Member;
 use Modules\Members\Models\MemberDependent;
@@ -46,7 +47,9 @@ class MemberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    function __construct()
+    function __construct(
+        protected SendMemberService $sendMemberService
+    )
     {
         $this->middleware('permission:user.create', ['only' => ['create','store']]);
     }
@@ -616,6 +619,10 @@ class MemberController extends Controller
         }
 
         DB::commit();
+
+        // Creating new member in new portal
+        $this->sendMemberService->createOrUpdateMember(['email' => $user->email]);
+
         if($request->verification == 'yes'){
             return redirect('admin/members/requests');
         }
@@ -931,6 +938,9 @@ class MemberController extends Controller
             
             return redirect('admin/members')->with('success', 'Data updated successfully');
         }
+
+        // Sending updated data to new portal
+        $this->sendMemberService->createOrUpdateMember(['email' => $user->email]);
 
         return redirect('admin/members/member/view/'.$user_id)->with('success', 'Data updated successfully');
 
