@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->boolean('is_pinned')->default(false);
             $table->mediumText('title');
             $table->longText('body');
             $table->string('thumb');

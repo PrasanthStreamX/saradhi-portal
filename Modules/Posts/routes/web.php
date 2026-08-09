@@ -17,6 +17,7 @@ use Modules\Posts\Http\Controllers\Admin\ArticlesController;
 */
 
 Route::prefix('admin')->middleware(['auth:sanctum', 'verified_email', 'is_admin'])->group(function() {
+    Route::patch('posts/toggle-pin/{id}', [PostsController::class, 'togglePin'])->name('admin.posts.togglePin');
     Route::resource('posts', PostsController::class)->names('admin.posts');
     Route::resource('ads', AdsController::class)->names('admin.ads');
     Route::resource('articles', ArticlesController::class)->names('admin.articles');

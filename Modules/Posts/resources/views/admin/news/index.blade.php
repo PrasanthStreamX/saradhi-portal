@@ -42,6 +42,11 @@
                             <button type="submit" class="btn"><i class="fa-solid fa-trash"></i></button>
                         </form>
                         @endcan
+                        <form method="POST" action="{{ route('admin.posts.togglePin', $post->id) }}" onSubmit="if(!confirm('Are you sure you want to ' + {{ $post->is_pinned ? "'unpin'" : "'pin'" }} + ' this news?')) { return false; }">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn btn-pin-normal {{$post->is_pinned ? 'pinned': ''}}" title="{{$post->is_pinned ? 'Unpin item': 'Pin item'}}"><i class="fas fa-thumbtack"></i></button>
+                        </form>
                     </div>
                 </td>
             </tr>

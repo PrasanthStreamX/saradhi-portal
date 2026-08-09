@@ -30,7 +30,7 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Post::orderBy('created_at', 'desc')->paginate(25);
+        $posts = Post::orderBy('is_pinned', 'desc')->orderBy('created_at', 'desc')->paginate(25);
         $menuParent = 'news';
         return view('posts::admin.news.index', compact('posts','menuParent'));
     }
@@ -143,6 +143,16 @@ class PostsController extends Controller
         DB::commit();
 
         return redirect('/admin/posts/'.$id);
+    }
+
+    public function togglePin($id)
+    {
+        $post = Post::where('id', $id)->first();
+        $post->is_pinned = !$post->is_pinned;
+        $post->save();
+        return redirect()->back()->with(
+            ['message' => 'Post is '.$post->is_pinned ? 'Unpinned': 'Pinned']
+        );
     }
 
     /**

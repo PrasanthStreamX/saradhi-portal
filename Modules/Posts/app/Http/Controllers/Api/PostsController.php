@@ -16,7 +16,7 @@ class PostsController extends BaseController
      */
     public function index()
     {
-        $posts = Post::where('active',1)->orderBy('created_at', 'desc')->paginate(15);
+        $posts = Post::where('active',1)->orderBy('is_pinned', 'desc')->orderBy('created_at', 'desc')->paginate(15);
         foreach($posts as $key => $post){
             $posts[$key]['thumb'] = $post->thumb ? url('storage/images/news/'. $post->thumb) : null;
         }

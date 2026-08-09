@@ -1161,7 +1161,18 @@ table.list{
         }
     }
 }
-
+.btn-pin-normal{
+    color: #ddd;
+    &:hover{
+        color:#333
+    }
+    &.pinned{
+        color: red;
+        i{
+            transform: rotate(45deg);
+        }
+    }
+}
 .relative-cards{
     display: flex;
     flex-direction: column;
